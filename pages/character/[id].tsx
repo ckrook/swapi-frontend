@@ -71,7 +71,7 @@ function Detail() {
     <Page>
       <section className="gap-5 mb-4">
         <Link href="/">
-          <span className="underline">Go back</span>
+          <span className="underline text-xl">← Go back</span>
         </Link>
         <h1 className="text-3xl w-96">Character: {character.name}</h1>
       </section>
@@ -93,7 +93,7 @@ function Detail() {
       {/* Films */}
       <section>
         <h3>Films:</h3>
-        <div className=" col-span-2">
+        <div className="flex flex-col gap-4 col-span-2">
           {films.map((film) => (
             <Film data={film} />
           ))}
