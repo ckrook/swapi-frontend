@@ -5,6 +5,7 @@ import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
 
 export function ListPage() {
   const [characters, setCharacters] = useState<StarwarsCharacter[]>([]);
+  const [films, setFilms] = useState<StarwarsCharacter[]>([]);
 
   useEffect(() => {
     const fetchDataFromAPI = async () => {
@@ -21,11 +22,12 @@ export function ListPage() {
   return (
     <div>
       {characters?.map((character) => (
-        <div key={character.name} className="py-3 border-b px-5 ">
-          <Link href="/character?id={p.id}" as={`/detail/${character.url.slice(-2)}`}>
-            {character.name}
-          </Link>
-        </div>
+        <Link key={character.name} href="/character?id={p.id}" as={`/character/${character.url.slice(-2)}`}>
+          <div key={character.name} className="flex justify-between py-3 border m-4 rounded-md  p-5 cursor-pointe hover:bg-blue-50">
+            <p>{character.name}</p>
+            <div>→</div>
+          </div>
+        </Link>
       ))}
     </div>
   );
