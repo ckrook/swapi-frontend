@@ -22,7 +22,6 @@ export interface StarwarsCharacter {
 export interface StarwarsFilms {
   title: string;
   director: string;
-  created: string;
   release_date: string;
   episode_id: number;
 }
@@ -39,4 +38,28 @@ export interface StarWarsPlanet {
   residents: string[];
   films: string[];
   url: string;
+}
+
+export interface StarWarsStarship {
+  name: string;
+  cargo_capacity: string;
+  consumables: string;
+  length: string;
+  manufacturer: string;
+  model: string;
+}
+
+export interface StarWarsVehicle {
+  name: string;
+  cargo_capacity: string;
+  consumables: string;
+  length: string;
+  manufacturer: string;
+  model: string;
+  vehicle_class: string;
+  passengers: string;
+  max_atmosphering_speed: string;
+  crew: string;
+  cost_in_credits: string;
+  films: string[];
 }

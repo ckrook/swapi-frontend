@@ -5,19 +5,15 @@ import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
 
 export function ListPage() {
   const [characters, setCharacters] = useState<StarwarsCharacter[]>([]);
-  const [films, setFilms] = useState<StarwarsCharacter[]>([]);
 
   useEffect(() => {
     const fetchDataFromAPI = async () => {
       const data = await fetchData<SwapiResponse>("https://swapi.dev/api/people/");
-      console.log(data.results as StarwarsCharacter[]);
-
       setCharacters(data.results as StarwarsCharacter[]);
     };
 
     fetchDataFromAPI();
   }, []);
-  console.log(characters);
 
   return (
     <div>

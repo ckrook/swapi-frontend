@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply font-normal;
+}
+p,
+li {
+  @apply text-gray-600 text-lg;
+}
+
+ul li {
+  @apply border-b py-2;
+}
+
+h3 {
+  @apply font-medium text-xl;
+}
+
+section {
+  @apply p-4 grid grid-cols-1  lg:grid-cols-3 gap-4;
+}

@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
-import { fetchData } from "../../hooks/fetchData";
-import { useRouter } from "next/router";
-import { StarwarsCharacter, StarwarsFilms, StarWarsPlanet } from "../../types/TypesStarwars";
-import Page from "../../components/Page";
 import Link from "next/link";
+
+// Hooks
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { fetchData } from "../../hooks/fetchData";
+
+// Components
+import Page from "../../components/Page";
+import { Film } from "../../components/Film";
+
+// Types
+import { StarwarsCharacter, StarwarsFilms, StarWarsPlanet, StarWarsStarship, StarWarsVehicle } from "../../types/TypesStarwars";
+import { Planet } from "../../components/Planet";
 
 function Detail() {
   const router = useRouter();
@@ -12,6 +20,8 @@ function Detail() {
   const [character, setCharacter] = useState<StarwarsCharacter>();
   const [films, setFilms] = useState<StarwarsFilms[]>([]);
   const [homeworld, setHomeworld] = useState<StarWarsPlanet>();
+  const [starships, setStarships] = useState<StarWarsStarship[]>([]);
+  const [vehicles, setVehicles] = useState<StarWarsVehicle[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -25,8 +35,24 @@ function Detail() {
           return filmData;
         })
       );
+
+      const starships = await Promise.all(
+        data.starships.map(async (film) => {
+          const starshipData = await fetchData<StarWarsStarship>(film);
+          return starshipData;
+        })
+      );
+      const vehicle = await Promise.all(
+        data.starships.map(async (film) => {
+          const vehicleData = await fetchData<StarWarsVehicle>(film);
+          return vehicleData;
+        })
+      );
+
       const homeworld = await fetchData<StarWarsPlanet>(data.homeworld);
 
+      setVehicles(vehicle);
+      setStarships(starships);
       setFilms(films);
       setHomeworld(homeworld);
     };
@@ -43,53 +69,64 @@ function Detail() {
 
   return (
     <Page>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl">Character: {character.name}</h1>
+      <section className="gap-5 mb-4">
         <Link href="/">
           <span className="underline">Go back</span>
         </Link>
-      </div>
-      <div className="bg-blue-50 grid grid-cols-2 gap-2 border p-5 rounded-md border-blue-200 mb-4">
-        <p>Birth year: {character.birth_year}</p>
-        <p>Eye Color: {character.eye_color}</p>
-        <p>Height: {character.height}</p>
-        <p>Mass: {character.mass}</p>
-        <p>Gender: {character.gender}</p>
-        <p>Skin Color: {character.skin_color}</p>
-      </div>
-      <div className="border rounded-md p-5">
-        <h2 className="text-xl mb-2">Films:</h2>
-        <div className="flex gap-4">
+        <h1 className="text-3xl w-96">Character: {character.name}</h1>
+      </section>
+
+      <section>
+        <h3>Personal details:</h3>
+        <div className="col-span-2 gap-2 mb-4">
+          <ul>
+            <li>Birth year: {character.birth_year}</li>
+            <li>Eye Color: {character.eye_color}</li>
+            <li>Height: {character.height}</li>
+            <li>Mass: {character.mass}</li>
+            <li>Gender: {character.gender}</li>
+            <li>Skin Color: {character.skin_color}</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Films */}
+      <section>
+        <h3>Films:</h3>
+        <div className=" col-span-2">
           {films.map((film) => (
-            <Link href={`/film/${film.episode_id.toString()}`} key={film.episode_id}>
-              <div className="border p-4 mb-2 rounded-md hover:bg-green-50 cursor-pointer">
-                <p>{film.title}</p>
-                <p>{film.director}</p>
-              </div>
-            </Link>
+            <Film data={film} />
           ))}
         </div>
-      </div>
-      {character.species.map((specie) => (
-        <p>{specie}</p>
-      ))}
-      {character.starships.map((starship) => (
-        <p>{starship}</p>
-      ))}
-      {character.vehicles.map((vehicle) => (
-        <p>{vehicle}</p>
-      ))}
-      <div className="border p-4 rounded-md">
-        {homeworld && (
-          <div>
-            <p>{homeworld.name}</p>
-            <p>{homeworld.population}</p>
-            <p>{homeworld.gravity} </p>
-            <p>{homeworld.population} </p>
-            <p>{homeworld.terrain} </p>
+      </section>
+
+      <section>
+        <h3>Planet:</h3>
+        <div className=" col-span-2 border p-4 rounded-md bg-white">{homeworld && <Planet data={homeworld} />}</div>
+      </section>
+
+      <section>
+        {starships.length != 0 && <h3>Starships:</h3>}
+        {starships &&
+          starships.map((starship) => (
+            <div className="border p-4 rounded-md bg-white">
+              <h4>{starship.name}</h4>
+              <p>{starship.model}</p>
+            </div>
+          ))}
+      </section>
+
+      <section>
+        {vehicles.length != 0 && <h3>Vehicles:</h3>}
+        {vehicles.map((vehicle) => (
+          <div className="border rounded-md p-4 ">
+            <h4>{vehicle.name}</h4>
+            <p>cargo_capacity {vehicle.cargo_capacity}</p>
+            <p> manufacturer {vehicle.manufacturer}</p>
+            <p>cost_in_credits {vehicle.cost_in_credits}</p>
           </div>
-        )}
-      </div>
+        ))}
+      </section>
     </Page>
   );
 }
