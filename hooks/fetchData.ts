@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import lscache from "lscache";
-import { SwapiResponse } from "../types/TypesStarwars";
 
 export async function fetchData<T>(url: string): Promise<T> {
   // Kolla om vi har data i cachen först
