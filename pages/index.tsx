@@ -1,10 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "../styles/Home.module.css";
 import { fetchData } from "../hooks/fetchData";
-import { useEffect, useState } from "react";
-import { ListPage } from "../components/ListPage";
 import Page from "../components/Page";
 import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
 import Link from "next/link";

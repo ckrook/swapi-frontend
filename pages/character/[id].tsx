@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 // Hooks
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { fetchData } from "../../hooks/fetchData";
 
