@@ -10,54 +10,21 @@ import Page from "../../components/Page";
 import { Film } from "../../components/Film";
 
 // Types
+import { NextPage } from "next";
 import { StarwarsCharacter, StarwarsFilms, StarWarsPlanet, StarWarsStarship, StarWarsVehicle } from "../../types/TypesStarwars";
 import { Planet } from "../../components/Planet";
 
-function Detail() {
+interface Props {
+  character: StarwarsCharacter;
+  films: StarwarsFilms[];
+  starships: StarWarsStarship[];
+  vehicles: StarWarsVehicle[];
+  homeworld: StarWarsPlanet;
+}
+
+const Detail: NextPage<Props> = ({ character, films, starships, vehicles, homeworld }) => {
   const router = useRouter();
   const { id } = router.query;
-
-  const [character, setCharacter] = useState<StarwarsCharacter>();
-  const [films, setFilms] = useState<StarwarsFilms[]>([]);
-  const [homeworld, setHomeworld] = useState<StarWarsPlanet>();
-  const [starships, setStarships] = useState<StarWarsStarship[]>([]);
-  const [vehicles, setVehicles] = useState<StarWarsVehicle[]>([]);
-
-  useEffect(() => {
-    if (!id) return;
-    const fetchDataFromAPI = async () => {
-      const data = await fetchData<StarwarsCharacter>(`https://swapi.dev/api/people/${id}`);
-      setCharacter(data);
-
-      const films = await Promise.all(
-        data.films.map(async (film) => {
-          const filmData = await fetchData<StarwarsFilms>(film);
-          return filmData;
-        })
-      );
-
-      const starships = await Promise.all(
-        data.starships.map(async (film) => {
-          const starshipData = await fetchData<StarWarsStarship>(film);
-          return starshipData;
-        })
-      );
-      const vehicle = await Promise.all(
-        data.starships.map(async (film) => {
-          const vehicleData = await fetchData<StarWarsVehicle>(film);
-          return vehicleData;
-        })
-      );
-
-      const homeworld = await fetchData<StarWarsPlanet>(data.homeworld);
-
-      setVehicles(vehicle);
-      setStarships(starships);
-      setFilms(films);
-      setHomeworld(homeworld);
-    };
-    fetchDataFromAPI();
-  }, [id]);
 
   if (!character) {
     return (
@@ -129,6 +96,34 @@ function Detail() {
       </section>
     </Page>
   );
-}
+};
+
+Detail.getInitialProps = async (ctx: any) => {
+  const { id } = ctx.query;
+  const character = await fetchData<StarwarsCharacter>(`https://swapi.dev/api/people/${id}`);
+  const films = await Promise.all(
+    character.films.map(async (film) => {
+      const filmData = await fetchData<StarwarsFilms>(film);
+      return filmData;
+    })
+  );
+
+  const starships = await Promise.all(
+    character.starships.map(async (film) => {
+      const starshipData = await fetchData<StarWarsStarship>(film);
+      return starshipData;
+    })
+  );
+  const vehicles = await Promise.all(
+    character.starships.map(async (film) => {
+      const vehicleData = await fetchData<StarWarsVehicle>(film);
+      return vehicleData;
+    })
+  );
+
+  const homeworld = await fetchData<StarWarsPlanet>(character.homeworld);
+
+  return { character, films, starships, vehicles, homeworld };
+};
 
 export default Detail;

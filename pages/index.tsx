@@ -6,10 +6,17 @@ import { fetchData } from "../hooks/fetchData";
 import { useEffect, useState } from "react";
 import { ListPage } from "../components/ListPage";
 import Page from "../components/Page";
+import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
+import Link from "next/link";
+import { NextPage } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+interface Props {
+  characters: StarwarsCharacter[];
+}
+
+const Home: NextPage<Props> = ({ characters }) => {
   return (
     <Page>
       <Head>
@@ -19,8 +26,24 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <ListPage />
+        <div>
+          {characters?.map((character) => (
+            <Link key={character.name} href="/character?id={p.id}" as={`/character/${character.url.slice(-2)}`}>
+              <div key={character.name} className="flex justify-between py-3 border m-4 rounded-md  p-5 cursor-pointe hover:bg-blue-50">
+                <p>{character.name}</p>
+                <div>→</div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </main>
     </Page>
   );
-}
+};
+
+Home.getInitialProps = async () => {
+  const data = await fetchData<SwapiResponse>("https://swapi.dev/api/people/");
+  return { characters: data.results as StarwarsCharacter[] };
+};
+
+export default Home;
