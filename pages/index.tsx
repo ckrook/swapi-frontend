@@ -6,8 +6,6 @@ import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
 import Link from "next/link";
 import { NextPage } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
-
 interface Props {
   characters: StarwarsCharacter[];
 }
