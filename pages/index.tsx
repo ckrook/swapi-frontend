@@ -5,6 +5,7 @@ import Page from "../components/Page";
 import { StarwarsCharacter, SwapiResponse } from "../types/TypesStarwars";
 import Link from "next/link";
 import { NextPage } from "next";
+import { getLastNumber } from "../lib/helpers";
 
 interface Props {
   characters: StarwarsCharacter[];
@@ -22,7 +23,7 @@ const Home: NextPage<Props> = ({ characters }) => {
       <main>
         <div>
           {characters?.map((character) => (
-            <Link key={character.name} href="/character?id={p.id}" as={`/character/${character.url.slice(-2)}`}>
+            <Link key={character.name} href="/character?id={p.id}" as={`/character/${getLastNumber(character.url)}`}>
               <div key={character.name} className="flex justify-between py-3 border m-4 rounded-md  p-5 cursor-pointe hover:bg-blue-50">
                 <p>{character.name}</p>
                 <div>→</div>
